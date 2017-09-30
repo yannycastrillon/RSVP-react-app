@@ -6,27 +6,65 @@ class App extends Component {
   state = {
     guests: [
       {
-        name:"Treasure",
-        isConfirmed: false
+        name: "Treasure",
+        isConfirmed: false,
+        isEditing: false
       },
       {
         name: "Nick",
-        isConfirmed: true
+        isConfirmed: true,
+        isEditing: false
       },
       {
         name: "Yanny",
-        isConfirmed: true
+        isConfirmed: true,
+        isEditing: false
       }
     ]
   };
 
+  // General function to toggle any property from state.
+  toggleGuestPropertyAt = (property, indexToChange) => {
+    this.setState({
+      guests: this.state.guests.map((guest, index)=> {
+        if (index === indexToChange){
+          return {
+            ...guest,
+            [property]: !guest[property]
+          }
+        }
+        return guest
+      })
+    })
+  }
+
+  // Toggles over the confirmation property
+  toggleConfirmationAt = index => {
+    this.toggleGuestPropertyAt("isConfirmed",index);
+  }
+
+  // Toggles over the editing property.
+  toggleEditingAt = index => {
+    this.toggleGuestPropertyAt("isEditing",index);
+  }
+
   getTotalInvited = () => this.state.guests.length
-  // getAttendingGuests = () => this.state.guests.map( (ele) => {
-  //   if(ele.isConfirmed){
-  //     this.state.totalConfirmed += 1
-  //   }
-  // })
-  // getUnconfirmedGuests
+
+  // Sets the current name when editing.
+  setNameAt = (name, indexToChange) => {
+    this.setState({
+      guests: this.state.guests.map((guest, index) => {
+        if (index === indexToChange) {
+          return {
+            ...guest,
+            name
+          }
+        }
+        return guest
+      })
+    })
+  }
+
   render() {
     return (
       <div className="App">
@@ -61,7 +99,12 @@ class App extends Component {
               </tr>
             </tbody>
           </table>
-          <GuestList guests={this.state.guests}/>
+          <GuestList
+            guests={this.state.guests}
+            toggleConfirmationAt={this.toggleConfirmationAt}
+            toggleEditingAt={this.toggleEditingAt}
+            setNameAt={this.setNameAt}
+          />
         </div>
       </div>
     );
