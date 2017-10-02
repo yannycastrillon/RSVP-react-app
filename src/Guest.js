@@ -16,7 +16,6 @@ const Guest = props => {
             type="checkbox"
             checked={props.isConfirmed}
             onChange={props.handleConfirmation}
-
           /> Confirmed
         </label>
         <button onClick={props.handleEditing}>{props.isEditing ? "Save" : "Edit"}</button>
