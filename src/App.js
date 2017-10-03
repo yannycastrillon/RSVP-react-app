@@ -95,7 +95,7 @@ class App extends Component {
   }
 
   removeGuestAt = (indexToRemove) => {
-    let cloneGuests = Object.assign([], this.state.guests)
+    // guests: this.state.guests.filter((v,i) => { return i !== indexToRemove})
     this.setState({
       guests: [
         ...this.state.guests.slice(0, indexToRemove),
@@ -157,6 +157,7 @@ class App extends Component {
             toggleEditingAt={this.toggleEditingAt}
             setNameAt={this.setNameAt}
             removeGuestAt={this.removeGuestAt}
+            pendingGuest={this.state.pendingGuest}
             isFiltered={this.state.isFiltered}
           />
         </div>
