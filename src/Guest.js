@@ -19,7 +19,7 @@ const Guest = props => {
           /> Confirmed
         </label>
         <button onClick={props.handleEditing}>{props.isEditing ? "Save" : "Edit"}</button>
-        <button>remove</button>
+        <button onClick={props.handleRemoving}>remove</button>
       </li>
     )
   }

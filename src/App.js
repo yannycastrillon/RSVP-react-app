@@ -4,6 +4,7 @@ import './App.css';
 
 class App extends Component {
   state = {
+    pendingGuest: "",
     isFiltered: false,
     guests: [
       {
@@ -72,15 +73,55 @@ class App extends Component {
     })
   }
 
+  handlePendingGuest = (guestName) => {
+    this.setState({
+      pendingGuest: guestName
+    })
+  }
+
+  handleAddGuest = (e) => {
+    e.preventDefault();
+    this.setState({
+      guests: [
+        {
+          name: this.state.pendingGuest,
+          isConfirmed: false,
+          isEditing:false
+        },
+        ...this.state.guests
+      ],
+      pendingGuest: ""
+    })
+  }
+
+  removeGuestAt = (indexToRemove) => {
+    let cloneGuests = Object.assign([], this.state.guests)
+    this.setState({
+      guests: [
+        ...this.state.guests.slice(0, indexToRemove),
+        ...this.state.guests.slice(indexToRemove + 1)
+      ]
+
+    })
+  }
+
   render() {
     return (
       <div className="App">
         <header>
           <h1>RSVP</h1>
           <p>A Treehouse App</p>
-          <form>
-              <input type="text" value="Safia" placeholder="Invite Someone" />
-              <button type="submit" name="submit" value="submit">Submit</button>
+          <form onSubmit={this.handleAddGuest}>
+              <input
+                type="text"
+                value={this.state.pendingGuest}
+                placeholder="Invite Someone"
+                onChange={(e) => this.handlePendingGuest(e.target.value)}
+              />
+              <button
+                type="submit"
+                name="submit"
+                value="submit">Submit</button>
           </form>
         </header>
         <div className="main">
@@ -115,6 +156,7 @@ class App extends Component {
             toggleConfirmationAt={this.toggleConfirmationAt}
             toggleEditingAt={this.toggleEditingAt}
             setNameAt={this.setNameAt}
+            removeGuestAt={this.removeGuestAt}
             isFiltered={this.state.isFiltered}
           />
         </div>
