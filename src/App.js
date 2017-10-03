@@ -9,16 +9,19 @@ class App extends Component {
     isFiltered: false,
     guests: [
       {
+        id: 1,
         name: "Treasure",
         isConfirmed: false,
         isEditing: false
       },
       {
+        id: 2,
         name: "Nick",
         isConfirmed: true,
         isEditing: false
       },
       {
+        id: 3,
         name: "Yanny",
         isConfirmed: true,
         isEditing: false
@@ -26,11 +29,18 @@ class App extends Component {
     ]
   };
 
+  lastGuestId = 0
+
+  newGuestId = () => {
+    const id = this.lastGuestId
+    this.lastGuestId += 1
+    return id
+  }
   // General function to toggle any property from state.
-  toggleGuestPropertyAt = (property, indexToChange) => {
+  toggleGuestPropertyAt = (property, id) => {
     this.setState({
-      guests: this.state.guests.map((guest, index)=> {
-        if (index === indexToChange){
+      guests: this.state.guests.map((guest)=> {
+        if (guest.id === id){
           return {
             ...guest,
             [property]: !guest[property]
@@ -42,13 +52,13 @@ class App extends Component {
   }
 
   // Toggles over the confirmation property
-  toggleConfirmationAt = index => {
-    this.toggleGuestPropertyAt("isConfirmed",index);
+  toggleConfirmationAt = id => {
+    this.toggleGuestPropertyAt("isConfirmed",id);
   }
 
   // Toggles over the editing property.
-  toggleEditingAt = index => {
-    this.toggleGuestPropertyAt("isEditing",index);
+  toggleEditingAt = id => {
+    this.toggleGuestPropertyAt("isEditing",id);
   }
 
   toggleFilter = () => {
@@ -65,10 +75,10 @@ class App extends Component {
     }, 0)
 
   // Sets the current name when editing.
-  setNameAt = (name, indexToChange) => {
+  setNameAt = (name, id) => {
     this.setState({
       guests: this.state.guests.map((guest, index) => {
-        if (index === indexToChange) {
+        if (guest.id === id) {
           return {
             ...guest,
             name
@@ -87,12 +97,14 @@ class App extends Component {
 
   handleAddGuest = (e) => {
     e.preventDefault();
+    const id = this.newGuestId()
     this.setState({
       guests: [
         {
           name: this.state.pendingGuest,
           isConfirmed: false,
-          isEditing:false
+          isEditing:false,
+          id
         },
         ...this.state.guests
       ],
@@ -100,13 +112,13 @@ class App extends Component {
     })
   }
 
-  removeGuestAt = (indexToRemove) => {
-    // guests: this.state.guests.filter((v,i) => { return i !== indexToRemove})
+  removeGuestAt = (id) => {
+    // [
+    //   ...this.state.guests.slice(0, indexToRemove),
+    //   ...this.state.guests.slice(indexToRemove + 1)
+    // ]
     this.setState({
-      guests: [
-        ...this.state.guests.slice(0, indexToRemove),
-        ...this.state.guests.slice(indexToRemove + 1)
-      ]
+      guests: this.state.guests.filter((guest) => { return guest.id !== id})
 
     })
   }

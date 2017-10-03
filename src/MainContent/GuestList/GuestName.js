@@ -13,7 +13,7 @@ const GuestName = props => {
   }
   return (
     <span>
-      {props.name}
+      { props.name }
     </span>
   )
 }
