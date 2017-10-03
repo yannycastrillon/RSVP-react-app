@@ -2,23 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types'
 
 const GuestName = props => {
-  render: {
-    if (props.isEditing) {
-      return (
-        <input
-          type="text"
-          value={props.name}
-          onChange={props.handleNameEdits}
-        />
-      )
-    }
+  if (props.isEditing) {
     return (
-      <span>
-        {props.name}
-      </span>
+      <input
+        type="text"
+        value={props.name}
+        onChange={props.handleNameEdits}
+      />
     )
-
   }
+  return (
+    <span>
+      {props.name}
+    </span>
+  )
 }
 
 GuestName.propTypes = {
