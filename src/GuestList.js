@@ -4,29 +4,27 @@ import Guest from './Guest'
 import PendingGuest from './PendingGuest'
 
 const GuestList = props => {
-  render: {
-    return (
-      <ul>
-        <PendingGuest name={props.pendingGuest}/>
-      {
-        props.guests
-          .filter(guest => !props.isFiltered || guest.isConfirmed)
-          .map((guest, index) => (
-          <Guest
-            key={index}
-            name={guest.name}
-            isConfirmed={guest.isConfirmed}
-            isEditing={guest.isEditing}
-            handleConfirmation={() => props.toggleConfirmationAt(index)}
-            handleEditing={(event) => props.toggleEditingAt(index)}
-            handleRemoving={() => props.removeGuestAt(index)}
-            setName={(text) => props.setNameAt(text, index)}
-          />
-        ))
-      }
-      </ul>
-    )
-  }
+  return (
+    <ul>
+      <PendingGuest name={props.pendingGuest}/>
+    {
+      props.guests
+        .filter(guest => !props.isFiltered || guest.isConfirmed)
+        .map((guest, index) => (
+        <Guest
+          key={index}
+          name={guest.name}
+          isConfirmed={guest.isConfirmed}
+          isEditing={guest.isEditing}
+          handleConfirmation={() => props.toggleConfirmationAt(index)}
+          handleEditing={(event) => props.toggleEditingAt(index)}
+          handleRemoving={() => props.removeGuestAt(index)}
+          setName={(text) => props.setNameAt(text, index)}
+        />
+      ))
+    }
+    </ul>
+  )
 }
 
 GuestList.propTypes = {

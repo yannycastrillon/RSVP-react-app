@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import GuestList from './GuestList.js'
+import Header from './Header'
+import MainContent from './MainContent'
 import './App.css';
-import Counter from './Counter';
 
 class App extends Component {
   state = {
@@ -117,48 +117,27 @@ class App extends Component {
     const numberUnconfirmed = totalInvited - numberAttending
     return (
       <div className="App">
-        <header>
-          <h1>RSVP</h1>
-          <p>A Treehouse App</p>
-          <form onSubmit={this.handleAddGuest}>
-              <input
-                type="text"
-                value={this.state.pendingGuest}
-                placeholder="Invite Someone"
-                onChange={(e) => this.handlePendingGuest(e.target.value)}
-              />
-              <button
-                type="submit"
-                name="submit"
-                value="submit">Submit</button>
-          </form>
-        </header>
-        <div className="main">
-          <div>
-            <h2>Invitees</h2>
-            <label>
-              <input
-                type="checkbox"
-                onChange={this.toggleFilter}
-                checked={this.state.isFiltered}
-              /> Hide those who haven' /t responded
-            </label>
-          </div>
-          <Counter
-            totalInvited={totalInvited}
-            numberAttending={numberAttending}
-            numberUnconfirmed={numberUnconfirmed}
-          />
-          <GuestList
-            guests={this.state.guests}
-            toggleConfirmationAt={this.toggleConfirmationAt}
-            toggleEditingAt={this.toggleEditingAt}
-            setNameAt={this.setNameAt}
-            removeGuestAt={this.removeGuestAt}
-            pendingGuest={this.state.pendingGuest}
-            isFiltered={this.state.isFiltered}
-          />
-        </div>
+        <Header
+          pendingGuest={this.state.pendingGuest}
+          handlePendingGuest={this.handlePendingGuest}
+          handleAddGuest={this.handleAddGuest}
+        />
+        <MainContent
+          toggleFilter={this.toggleFilter}
+          isFiltered={this.state.isFiltered}
+
+          totalInvited={totalInvited}
+          numberAttending={numberAttending}
+          numberUnconfirmed={numberUnconfirmed}
+
+          guests={this.state.guests}
+          toggleConfirmationAt={this.toggleConfirmationAt}
+          toggleEditingAt={this.toggleEditingAt}
+          setNameAt={this.setNameAt}
+          removeGuestAt={this.removeGuestAt}
+          pendingGuest={this.state.pendingGuest}
+        />
+
       </div>
     );
   }
