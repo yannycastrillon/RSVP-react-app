@@ -6,18 +6,18 @@ const Guest = props => {
   return (
     <li>
       <GuestName
-        isEditing={props.isEditing}
+        is_editing={props.is_editing}
         name={props.name}
         handleNameEdits={e => props.setName(e.target.value)}
       />
       <label>
         <input
           type="checkbox"
-          checked={props.isConfirmed}
+          checked={props.is_confirmed}
           onChange={props.handleConfirmation}
         /> Confirmed
       </label>
-      <button onClick={props.handleEditing}>{props.isEditing ? "Save" : "Edit"}</button>
+      <button onClick={props.handleEditing}>{props.is_editing ? "Save" : "Edit"}</button>
       <button onClick={props.handleRemoving}>remove</button>
     </li>
   )
@@ -25,8 +25,8 @@ const Guest = props => {
 
 Guest.propTypes = {
   name: PropTypes.string.isRequired,
-  isConfirmed: PropTypes.bool.isRequired,
-  isEditing: PropTypes.bool.isRequired,
+  is_confirmed: PropTypes.bool.isRequired,
+  is_editing: PropTypes.bool.isRequired,
   handleConfirmation: PropTypes.func.isRequired,
   handleEditing: PropTypes.func.isRequired,
   setName: PropTypes.func.isRequired

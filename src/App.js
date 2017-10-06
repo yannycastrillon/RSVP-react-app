@@ -2,32 +2,26 @@ import React, { Component } from 'react';
 import Header from './Header'
 import MainContent from './MainContent'
 import './App.css';
+import Axios from 'axios'
 
 class App extends Component {
   state = {
     pendingGuest: "",
     isFiltered: false,
-    guests: [
-      {
-        id: 1,
-        name: "Treasure",
-        isConfirmed: false,
-        isEditing: false
-      },
-      {
-        id: 2,
-        name: "Nick",
-        isConfirmed: true,
-        isEditing: false
-      },
-      {
-        id: 3,
-        name: "Yanny",
-        isConfirmed: true,
-        isEditing: false
-      }
-    ]
+    guests: []
   };
+
+  componentDidMount = () => {
+    Axios.get(`http://localhost:3001/api/v1/guests`)
+      .then(res => {
+        console.log("-------- RES API GUESTS ----------");
+        console.log(res.data);
+        console.log("-------- RES API GUESTS ----------");
+        const apiGuests = res.data
+        this.setState({guests: apiGuests})
+      })
+      .catch( error => console.log(error))
+  }
 
   lastGuestId = 0
 
@@ -53,12 +47,12 @@ class App extends Component {
 
   // Toggles over the confirmation property
   toggleConfirmationAt = id => {
-    this.toggleGuestPropertyAt("isConfirmed",id);
+    this.toggleGuestPropertyAt("is_confirmed",id);
   }
 
   // Toggles over the editing property.
   toggleEditingAt = id => {
-    this.toggleGuestPropertyAt("isEditing",id);
+    this.toggleGuestPropertyAt("is_editing",id);
   }
 
   toggleFilter = () => {
@@ -71,7 +65,7 @@ class App extends Component {
 
   getAttendingGuests = () =>
     this.state.guests.reduce((total, guest) => {
-      return guest.isConfirmed ? total + 1 : total
+      return guest.is_confirmed ? total + 1 : total
     }, 0)
 
   // Sets the current name when editing.
@@ -102,8 +96,8 @@ class App extends Component {
       guests: [
         {
           name: this.state.pendingGuest,
-          isConfirmed: false,
-          isEditing:false,
+          is_confirmed: false,
+          is_editing:false,
           id
         },
         ...this.state.guests

@@ -7,7 +7,7 @@ const ConfirmedFilter = (props) => {
       <input
         type="checkbox"
         onChange={props.toggleFilter}
-        checked={props.isConfirmed}
+        checked={props.is_confirmed}
       /> Hide those who haven' /t responded
     </label>
   )
