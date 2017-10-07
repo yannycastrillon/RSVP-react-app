@@ -14,9 +14,6 @@ class App extends Component {
   componentDidMount = () => {
     Axios.get(`http://localhost:3001/api/v1/guests`)
       .then(res => {
-        console.log("-------- RES API GUESTS ----------");
-        console.log(res.data);
-        console.log("-------- RES API GUESTS ----------");
         const apiGuests = res.data
         this.setState({guests: apiGuests})
       })
@@ -34,6 +31,14 @@ class App extends Component {
   toggleGuestPropertyAt = (property, id) => {
     this.setState({
       guests: this.state.guests.map((guest)=> {
+        if (guest.is_editing) {
+          // Patch request on the api with updated name and info
+          Axios.patch(`http://localhost:3001/api/v1/guests/${guest.id}`, {
+            guest: { name: guest.name, is_confirmed: guest.is_confirmed }
+          }).then(res => {
+            console.log(res.data);
+          })
+        }
         if (guest.id === id){
           return {
             ...guest,
@@ -71,7 +76,7 @@ class App extends Component {
   // Sets the current name when editing.
   setNameAt = (name, id) => {
     this.setState({
-      guests: this.state.guests.map((guest, index) => {
+      guests: this.state.guests.map((guest) => {
         if (guest.id === id) {
           return {
             ...guest,
