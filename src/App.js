@@ -91,19 +91,32 @@ class App extends Component {
 
   handleAddGuest = (e) => {
     e.preventDefault();
-    const id = this.newGuestId()
-    this.setState({
-      guests: [
-        {
-          name: this.state.pendingGuest,
+
+    Axios.post(`http://localhost:3001/api/v1/guests`,
+      {
+        guest: {
+          name:this.state.pendingGuest,
           is_confirmed: false,
-          is_editing:false,
-          id
-        },
-        ...this.state.guests
-      ],
-      pendingGuest: ""
-    })
+          is_editing: false
+        }
+      })
+      .then(res => {
+        console.log("------- Guest Created -------");
+        console.log(res);
+        console.log("-----------------------------");
+        const apiNewGuest = res.data
+        this.setState({
+          guests: [
+            {
+              name: apiNewGuest.name,
+              is_confirmed: apiNewGuest.is_confirmed,
+              is_editing: apiNewGuest.is_editing,
+            },
+            ...this.state.guests
+          ],
+          pendingGuest: ""
+        })
+      })
   }
 
   removeGuestAt = (id) => {
