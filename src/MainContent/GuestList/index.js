@@ -9,13 +9,13 @@ const GuestList = props => {
       <PendingGuest name={props.pendingGuest}/>
       {
         props.guests
-          .filter(guest => !props.isFiltered || guest.isConfirmed)
+          .filter(guest => !props.isFiltered || guest.is_confirmed)
           .map((guest, index) => (
           <Guest
             key={index}
             name={guest.name}
-            isConfirmed={guest.isConfirmed}
-            isEditing={guest.isEditing}
+            is_confirmed={guest.is_confirmed}
+            is_editing={guest.is_editing}
             handleConfirmation={() => props.toggleConfirmationAt(guest.id)}
             handleEditing={(event) => props.toggleEditingAt(guest.id)}
             handleRemoving={() => props.removeGuestAt(guest.id)}

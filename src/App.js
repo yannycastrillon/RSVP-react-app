@@ -2,32 +2,23 @@ import React, { Component } from 'react';
 import Header from './Header'
 import MainContent from './MainContent'
 import './App.css';
+import Axios from 'axios'
 
 class App extends Component {
   state = {
     pendingGuest: "",
     isFiltered: false,
-    guests: [
-      {
-        id: 1,
-        name: "Treasure",
-        isConfirmed: false,
-        isEditing: false
-      },
-      {
-        id: 2,
-        name: "Nick",
-        isConfirmed: true,
-        isEditing: false
-      },
-      {
-        id: 3,
-        name: "Yanny",
-        isConfirmed: true,
-        isEditing: false
-      }
-    ]
+    guests: []
   };
+
+  componentDidMount = () => {
+    Axios.get(`http://localhost:3001/api/v1/guests`)
+      .then(res => {
+        const apiGuests = res.data
+        this.setState({guests: apiGuests})
+      })
+      .catch( error => console.log(error))
+  }
 
   lastGuestId = 0
 
@@ -40,6 +31,14 @@ class App extends Component {
   toggleGuestPropertyAt = (property, id) => {
     this.setState({
       guests: this.state.guests.map((guest)=> {
+        if (guest.is_editing) {
+          // Patch request on the api with updated name and info
+          Axios.patch(`http://localhost:3001/api/v1/guests/${guest.id}`, {
+            guest: { name: guest.name, is_confirmed: guest.is_confirmed }
+          }).then(res => {
+            console.log(res.data);
+          })
+        }
         if (guest.id === id){
           return {
             ...guest,
@@ -53,12 +52,12 @@ class App extends Component {
 
   // Toggles over the confirmation property
   toggleConfirmationAt = id => {
-    this.toggleGuestPropertyAt("isConfirmed",id);
+    this.toggleGuestPropertyAt("is_confirmed",id);
   }
 
   // Toggles over the editing property.
   toggleEditingAt = id => {
-    this.toggleGuestPropertyAt("isEditing",id);
+    this.toggleGuestPropertyAt("is_editing",id);
   }
 
   toggleFilter = () => {
@@ -71,13 +70,13 @@ class App extends Component {
 
   getAttendingGuests = () =>
     this.state.guests.reduce((total, guest) => {
-      return guest.isConfirmed ? total + 1 : total
+      return guest.is_confirmed ? total + 1 : total
     }, 0)
 
   // Sets the current name when editing.
   setNameAt = (name, id) => {
     this.setState({
-      guests: this.state.guests.map((guest, index) => {
+      guests: this.state.guests.map((guest) => {
         if (guest.id === id) {
           return {
             ...guest,
@@ -97,19 +96,32 @@ class App extends Component {
 
   handleAddGuest = (e) => {
     e.preventDefault();
-    const id = this.newGuestId()
-    this.setState({
-      guests: [
-        {
-          name: this.state.pendingGuest,
-          isConfirmed: false,
-          isEditing:false,
-          id
-        },
-        ...this.state.guests
-      ],
-      pendingGuest: ""
-    })
+
+    Axios.post(`http://localhost:3001/api/v1/guests`,
+      {
+        guest: {
+          name:this.state.pendingGuest,
+          is_confirmed: false,
+          is_editing: false
+        }
+      })
+      .then(res => {
+        console.log("------- Guest Created -------");
+        console.log(res);
+        console.log("-----------------------------");
+        const apiNewGuest = res.data
+        this.setState({
+          guests: [
+            {
+              name: apiNewGuest.name,
+              is_confirmed: apiNewGuest.is_confirmed,
+              is_editing: apiNewGuest.is_editing,
+            },
+            ...this.state.guests
+          ],
+          pendingGuest: ""
+        })
+      })
   }
 
   removeGuestAt = (id) => {

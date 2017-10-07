@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types'
 
 const GuestName = props => {
-  if (props.isEditing) {
+  if (props.is_editing) {
     return (
       <input
         type="text"
@@ -19,7 +19,7 @@ const GuestName = props => {
 }
 
 GuestName.propTypes = {
-  isEditing: PropTypes.bool.isRequired,
+  is_editing: PropTypes.bool.isRequired,
   handleNameEdits: PropTypes.func.isRequired
 }
 
