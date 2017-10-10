@@ -129,10 +129,17 @@ class App extends Component {
     //   ...this.state.guests.slice(0, indexToRemove),
     //   ...this.state.guests.slice(indexToRemove + 1)
     // ]
-    this.setState({
-      guests: this.state.guests.filter((guest) => { return guest.id !== id})
+    Axios.delete(`http://localhost:3001/api/v1/guests/${id}`)
+      .then(response => {
+        console.log("------------ DELETE RESPONSE ------------");
+        console.log(response.data);
+        console.log("------------ ------------ ------------ ");
 
-    })
+        this.setState({
+          guests: this.state.guests.filter((guest) => { return guest.id !== response.data.guestId })
+
+        })
+      })
   }
 
   render() {
