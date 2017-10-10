@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Header from './Header'
 import MainContent from './MainContent'
 import './App.css';
-import Axios from 'axios'
+import FactoryApi from './util/FactoryAPI'
 
 class App extends Component {
   state = {
@@ -12,12 +12,9 @@ class App extends Component {
   };
 
   componentDidMount = () => {
-    Axios.get(`http://localhost:3001/api/v1/guests`)
-      .then(res => {
-        const apiGuests = res.data
-        this.setState({guests: apiGuests})
-      })
-      .catch( error => console.log(error))
+    FactoryApi.fetchAllGuests().then(apiGuests => {
+      this.setState({ guests: apiGuests })
+    })
   }
 
   lastGuestId = 0
@@ -32,12 +29,7 @@ class App extends Component {
     this.setState({
       guests: this.state.guests.map((guest)=> {
         if (guest.is_editing) {
-          // Patch request on the api with updated name and info
-          Axios.patch(`http://localhost:3001/api/v1/guests/${guest.id}`, {
-            guest: { name: guest.name, is_confirmed: guest.is_confirmed }
-          }).then(res => {
-            console.log(res.data);
-          })
+          FactoryApi.updateGuest(guest).then(updatedGuest => console.log(updatedGuest))
         }
         if (guest.id === id){
           return {
@@ -89,54 +81,36 @@ class App extends Component {
   }
 
   handlePendingGuest = (guestName) => {
-    this.setState({
-      pendingGuest: guestName
-    })
+    this.setState({ pendingGuest: guestName })
   }
 
   handleAddGuest = (e) => {
     e.preventDefault();
-
-    Axios.post(`http://localhost:3001/api/v1/guests`,
-      {
-        guest: {
-          name:this.state.pendingGuest,
-          is_confirmed: false,
-          is_editing: false
-        }
+    let guest = { name: this.state.pendingGuest, is_confirmed: false, is_editing: false }
+    FactoryApi.createGuest(guest).then( newGuest => {
+      this.setState({
+        guests: [
+          {
+            name: newGuest.name,
+            is_confirmed: newGuest.is_confirmed,
+            is_editing: newGuest.is_editing,
+          },
+          ...this.state.guests
+        ],
+        pendingGuest: ""
       })
-      .then(res => {
-        console.log("------- Guest Created -------");
-        console.log(res);
-        console.log("-----------------------------");
-        const apiNewGuest = res.data
-        this.setState({
-          guests: [
-            {
-              name: apiNewGuest.name,
-              is_confirmed: apiNewGuest.is_confirmed,
-              is_editing: apiNewGuest.is_editing,
-            },
-            ...this.state.guests
-          ],
-          pendingGuest: ""
-        })
-      })
+    })
   }
 
   removeGuestAt = (id) => {
-    // [
-    //   ...this.state.guests.slice(0, indexToRemove),
-    //   ...this.state.guests.slice(indexToRemove + 1)
-    // ]
-    Axios.delete(`http://localhost:3001/api/v1/guests/${id}`)
-      .then(response => {
+    FactoryApi.deleteGuest(id)
+      .then(deleteGuest => {
         console.log("------------ DELETE RESPONSE ------------");
-        console.log(response.data);
+        console.log(deleteGuest);
         console.log("------------ ------------ ------------ ");
 
         this.setState({
-          guests: this.state.guests.filter((guest) => { return guest.id !== response.data.guestId })
+          guests: this.state.guests.filter((guest) => { return guest.id !== deleteGuest.guestId })
 
         })
       })
